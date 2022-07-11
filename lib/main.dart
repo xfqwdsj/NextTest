@@ -10,8 +10,26 @@ class NextTestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/': (BuildContext context) => const NextTestHomePage(),
+      },
       title: _appTitle,
+    );
+  }
+}
 
+class NextTestHomePage extends StatelessWidget {
+  const NextTestHomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(_appTitle),
+      ),
+      body: const Center(
+        child: Text('Hello, world!'),
+      ),
     );
   }
 }
