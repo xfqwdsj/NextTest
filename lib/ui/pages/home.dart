@@ -35,6 +35,7 @@ class _HomeState extends State<NextTestHomePage> {
 
   Widget _buildLibraryItem(BuildContext context, Child child) {
     Widget? leading;
+    String subtitle = child.description;
     bool? isFolder;
 
     if (child.url != null) {
@@ -45,10 +46,15 @@ class _HomeState extends State<NextTestHomePage> {
       isFolder = true;
     }
 
+    if (child is Library) {
+      subtitle += '\n${child.author}';
+    }
+
     return ListTile(
       leading: leading,
       title: Text(child.title),
-      subtitle: Text(child.description),
+      subtitle: Text(subtitle),
+      isThreeLine: true,
       onTap: () {
         if (isFolder == true) {
           Navigator.pushNamed(context, NextTestHomePage.route,
