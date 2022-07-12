@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:next_test/ui/pages/home.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:next_test/ui/pages/main.dart';
+import 'package:next_test/ui/pages/selecting.dart';
 
 import 'data/model/library.dart';
-
-const String appTitle = 'NextTest';
 
 void main() => runApp(const NextTestApp());
 
@@ -17,12 +17,21 @@ class NextTestApp extends StatelessWidget {
       routes: {
         NextTestMainPage.route: (BuildContext context) =>
             const NextTestMainPage(),
-        NextTestHomePage.route: (BuildContext context) => NextTestHomePage(
-            children:
-                ModalRoute.of(context)?.settings.arguments as List<Child>?),
+        NextTestSelectingPage.route: (BuildContext context) =>
+            NextTestSelectingPage(
+                children:
+                    ModalRoute.of(context)?.settings.arguments as List<Child>?),
       },
       initialRoute: NextTestMainPage.route,
-      title: appTitle,
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context)!.appName,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

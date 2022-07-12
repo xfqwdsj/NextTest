@@ -2,25 +2,25 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:next_test/data/model/library.dart';
 import 'package:next_test/utils/yaml_utils.dart';
 import 'package:yaml/yaml.dart';
 
-import '../../main.dart';
 import '../widgets/app_bar.dart';
 
-class NextTestHomePage extends StatefulWidget {
-  const NextTestHomePage({Key? key, this.children}) : super(key: key);
+class NextTestSelectingPage extends StatefulWidget {
+  const NextTestSelectingPage({Key? key, this.children}) : super(key: key);
   final List<Child>? children;
 
-  static const route = '/home';
+  static const route = '/selecting';
 
   @override
-  State<StatefulWidget> createState() => _HomeState();
+  State<StatefulWidget> createState() => _SelectingState();
 }
 
-class _HomeState extends State<NextTestHomePage> {
+class _SelectingState extends State<NextTestSelectingPage> {
   late final Future<List<Child>> futureLibraries;
 
   @override
@@ -33,7 +33,7 @@ class _HomeState extends State<NextTestHomePage> {
     }
   }
 
-  Widget _buildLibraryItem(BuildContext context, Child child) {
+  Widget _buildItem(BuildContext context, Child child) {
     Widget? leading;
     String subtitle = child.description;
     bool? isFolder;
@@ -47,17 +47,18 @@ class _HomeState extends State<NextTestHomePage> {
     }
 
     if (child is Library) {
-      subtitle += '\n${child.author}';
+      subtitle +=
+          '\n${AppLocalizations.of(context)?.selectingPageItemAuthorPrefix}${child.author}';
     }
 
     return ListTile(
       leading: leading,
       title: Text(child.title),
       subtitle: Text(subtitle),
-      isThreeLine: true,
+      isThreeLine: child is Library,
       onTap: () {
         if (isFolder == true) {
-          Navigator.pushNamed(context, NextTestHomePage.route,
+          Navigator.pushNamed(context, NextTestSelectingPage.route,
               arguments: child.children);
         } else if (isFolder == false) {
           //Not implemented yet.
@@ -69,8 +70,8 @@ class _HomeState extends State<NextTestHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const NextTestAppBar(
-        title: Text(appTitle),
+      appBar: NextTestAppBar(
+        title: Text(AppLocalizations.of(context)!.selectingPageTitle),
       ),
       body: FutureBuilder(
         future: futureLibraries,
@@ -79,7 +80,7 @@ class _HomeState extends State<NextTestHomePage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) =>
-                  _buildLibraryItem(context, snapshot.data![index]),
+                  _buildItem(context, snapshot.data![index]),
             );
           } else if (snapshot.hasError) {
             return Center(
