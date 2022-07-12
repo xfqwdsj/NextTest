@@ -11,8 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
       - run: |
           flutter config --enable-web
           flutter pub get
