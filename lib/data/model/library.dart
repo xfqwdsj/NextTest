@@ -3,17 +3,16 @@ import 'package:json_annotation/json_annotation.dart';
 part 'library.g.dart';
 
 @JsonSerializable()
-class Library {
-  Library(this.title, this.description, this.author, this.children);
-
-  final String title;
-  final String description;
+class Library extends Child {
+  Library(String title, String description, this.author, String? url,
+      List<Child>? children)
+      : super(title, description, url, children);
   final String author;
-  final List<Child> children;
 
   factory Library.fromJson(Map<String, dynamic> json) =>
       _$LibraryFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$LibraryToJson(this);
 }
 
@@ -23,8 +22,8 @@ class Child {
 
   final String title;
   final String description;
-  final String url;
-  final List<Child> children;
+  final String? url;
+  final List<Child>? children;
 
   factory Child.fromJson(Map<String, dynamic> json) => _$ChildFromJson(json);
 
