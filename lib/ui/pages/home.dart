@@ -11,42 +11,51 @@ import '../../main.dart';
 import '../widgets/app_bar.dart';
 
 class NextTestHomePage extends StatefulWidget {
-  const NextTestHomePage({Key? key}) : super(key: key);
+  const NextTestHomePage({Key? key, this.children}) : super(key: key);
+  final List<Child>? children;
+
+  static const route = '/home';
 
   @override
   State<StatefulWidget> createState() => _HomeState();
 }
 
 class _HomeState extends State<NextTestHomePage> {
-  late Future<List<Library>> futureLibraries;
+  late final Future<List<Child>> futureLibraries;
 
   @override
   void initState() {
     super.initState();
-    futureLibraries = _fetchLibraries();
+    if (widget.children != null) {
+      futureLibraries = Future.value(widget.children);
+    } else {
+      futureLibraries = _fetchLibraries();
+    }
   }
 
-  Widget _buildLibraryItem(BuildContext context, Library library) {
+  Widget _buildLibraryItem(BuildContext context, Child child) {
     Widget? leading;
+    bool? isFolder;
 
-    if (library.url != null) {
-      leading = IconButton(
-        icon: const Icon(Icons.book),
-        onPressed: () {},
-      );
-    } else if (library.children != null) {
-      leading = IconButton(
-        icon: const Icon(Icons.folder),
-        onPressed: () {},
-      );
+    if (child.url != null) {
+      leading = const Icon(Icons.book);
+      isFolder = false;
+    } else if (child.children != null) {
+      leading = const Icon(Icons.folder);
+      isFolder = true;
     }
 
     return ListTile(
       leading: leading,
-      title: Text(library.title),
-      subtitle: Text(library.description),
+      title: Text(child.title),
+      subtitle: Text(child.description),
       onTap: () {
-        // Not yet implemented.
+        if (isFolder == true) {
+          Navigator.pushNamed(context, NextTestHomePage.route,
+              arguments: child.children);
+        } else if (isFolder == false) {
+          //Not implemented yet.
+        }
       },
     );
   }
@@ -59,7 +68,7 @@ class _HomeState extends State<NextTestHomePage> {
       ),
       body: FutureBuilder(
         future: futureLibraries,
-        builder: (BuildContext context, AsyncSnapshot<List<Library>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Child>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,

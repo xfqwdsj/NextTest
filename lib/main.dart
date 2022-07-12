@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:next_test/ui/pages/home.dart';
+import 'package:next_test/ui/pages/main.dart';
+
+import 'data/model/library.dart';
 
 const String appTitle = 'NextTest';
 
@@ -12,8 +15,13 @@ class NextTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (BuildContext context) => const NextTestHomePage(),
+        NextTestMainPage.route: (BuildContext context) =>
+            const NextTestMainPage(),
+        NextTestHomePage.route: (BuildContext context) => NextTestHomePage(
+            children:
+                ModalRoute.of(context)?.settings.arguments as List<Child>?),
       },
+      initialRoute: NextTestMainPage.route,
       title: appTitle,
     );
   }
