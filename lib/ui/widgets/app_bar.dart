@@ -14,25 +14,18 @@ class NextTestAppBar extends StatelessWidget implements PreferredSizeWidget {
   final height = kToolbarHeight;
 
   @override
-  Widget build(BuildContext context) {
-    var finalLeading = leading;
-    if (leading == null && Navigator.canPop(context)) {
-      finalLeading = IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
+  Widget build(BuildContext context) => AppBar(
+        leading: leading == null && Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : leading,
+        title: title,
+        actions: actions,
       );
-    } else {
-      finalLeading = leading;
-    }
-
-    return AppBar(
-      leading: finalLeading,
-      title: title,
-      actions: actions,
-    );
-  }
 
   @override
   Size get preferredSize => Size.fromHeight(height);

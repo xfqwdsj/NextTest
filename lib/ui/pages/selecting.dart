@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,32 +9,39 @@ import 'package:next_test/data/model/library.dart';
 import 'package:next_test/utils/yaml_utils.dart';
 import 'package:yaml/yaml.dart';
 
+import '../../utils/route_utils.dart';
 import '../widgets/app_bar.dart';
 
 class NextTestSelectingPage extends StatefulWidget {
-  const NextTestSelectingPage({Key? key, this.children}) : super(key: key);
-  final List<Child>? children;
+  const NextTestSelectingPage({Key? key, this.path}) : super(key: key);
+  final List<int>? path;
 
-  static const route = '/selecting';
+  static const route = 'selecting';
 
   @override
   State<StatefulWidget> createState() => _SelectingState();
 }
 
 class _SelectingState extends State<NextTestSelectingPage> {
-  late final Future<List<Child>> futureLibraries;
+  Widget body = const Center(child: CircularProgressIndicator());
 
   @override
   void initState() {
     super.initState();
-    if (widget.children != null) {
-      futureLibraries = Future.value(widget.children);
-    } else {
-      futureLibraries = _fetchLibraries();
-    }
+    _fetchLibraries(widget.path).then((value) {
+      setState(() {
+        body = ListView.builder(
+            itemCount: value.length,
+            itemBuilder: (BuildContext context, int index) =>
+                _buildItem(context, value, index));
+      });
+    }).catchError((e) {
+      Navigator.pushReplacementNamed(context, NextTestRoute.toRoute(['404']));
+    });
   }
 
-  Widget _buildItem(BuildContext context, Child child) {
+  Widget _buildItem(BuildContext context, List<Child> children, int index) {
+    final child = children[index];
     Widget? leading;
     String subtitle = child.description;
     bool? isFolder;
@@ -48,7 +56,7 @@ class _SelectingState extends State<NextTestSelectingPage> {
 
     if (child is Library) {
       subtitle +=
-          '\n${AppLocalizations.of(context)?.selectingPageItemAuthorPrefix}${child.author}';
+      '\n${AppLocalizations.of(context)?.selectingPageItemAuthorPrefix}${child.author}';
     }
 
     return ListTile(
@@ -58,8 +66,13 @@ class _SelectingState extends State<NextTestSelectingPage> {
       isThreeLine: child is Library,
       onTap: () {
         if (isFolder == true) {
-          Navigator.pushNamed(context, NextTestSelectingPage.route,
-              arguments: child.children);
+          Navigator.pushNamed(
+              context,
+              NextTestRoute.toRoute([
+                NextTestSelectingPage.route,
+                ...?(widget.path?.map((e) => e.toString())),
+                index.toString()
+              ]));
         } else if (isFolder == false) {
           //Not implemented yet.
         }
@@ -73,41 +86,31 @@ class _SelectingState extends State<NextTestSelectingPage> {
       appBar: NextTestAppBar(
         title: Text(AppLocalizations.of(context)!.selectingPageTitle),
       ),
-      body: FutureBuilder(
-        future: futureLibraries,
-        builder: (BuildContext context, AsyncSnapshot<List<Child>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  _buildItem(context, snapshot.data![index]),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+      body: body,
     );
   }
 }
 
-Future<List<Library>> _fetchLibraries() async {
-  final urls =
+Future<List<Child>> _fetchLibraries(List<int>? path) async {
+  var urls =
       (loadYaml(await rootBundle.loadString("assets/libraries/libraries.yml"))
               as YamlList)
           .toTypedList<String>();
-  final libraries = <Library>[];
+  if (path?.isNotEmpty == true) {
+    final index = path!.first;
+    urls = [urls[index]];
+  }
+  var libraries = <Child>[];
   for (var url in urls) {
     libraries.add(Library.fromJson(
         (loadYaml(utf8.decode((await get(Uri.parse(url))).bodyBytes))
                 as YamlMap)
             .toMap()));
+  }
+  if (path != null) {
+    for (var i in path) {
+      libraries = libraries[i].children ?? [];
+    }
   }
   return libraries;
 }

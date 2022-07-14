@@ -2,5 +2,7 @@
   "appName": "NextTest",
   "mainPageTitle": "主页",
   "selectingPageTitle": "题组选择",
-  "selectingPageItemAuthorPrefix": "作者："
+  "selectingPageItemAuthorPrefix": "作者：",
+  "notFoundPageTitle": "无人区",
+  "notFoundPageContent": "没有找到该页面...😥"
 }
