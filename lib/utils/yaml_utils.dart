@@ -14,14 +14,6 @@ extension YamlListConverter on YamlList {
     });
     return result;
   }
-
-  List<T> toTypedList<T>() {
-    final List<T> result = [];
-    forEach((item) {
-      result.add(item as T);
-    });
-    return result;
-  }
 }
 
 extension YamlMapConverter on YamlMap {
@@ -38,4 +30,12 @@ extension YamlMapConverter on YamlMap {
     });
     return map;
   }
+}
+
+extension YamlParser on String {
+  Map<String, dynamic> toMap() => (loadYaml(this) as YamlMap).toMap();
+
+  List<dynamic> toList() => (loadYaml(this) as YamlList).toListDeeply();
+
+  List<T> toTypedList<T>() => toList().map((e) => e as T).toList();
 }

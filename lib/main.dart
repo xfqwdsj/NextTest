@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:next_test/ui/pages/main.dart';
 import 'package:next_test/ui/pages/not_found.dart';
 import 'package:next_test/ui/pages/selecting.dart';
+import 'package:next_test/ui/pages/testing.dart';
+
+import 'generated/l10n.dart';
 
 void main() => runApp(const NextTestApp());
 
@@ -22,9 +24,14 @@ class NextTestApp extends StatelessWidget {
             builder: (context) => NextTestSelectingPage(
                 path: path.skip(1).map((e) => int.parse(e)).toList()),
             settings: settings);
+      case NextTestTestingPage.route:
+        return MaterialPageRoute(
+            builder: (context) => NextTestTestingPage(url: path[1]),
+            settings: settings);
       default:
         return MaterialPageRoute(
-            builder: (context) => const NotFoundPage(), settings: settings);
+            builder: (context) => NotFoundPage(error: settings.arguments),
+            settings: settings);
     }
   }
 
@@ -33,14 +40,14 @@ class NextTestApp extends StatelessWidget {
     return MaterialApp(
       onGenerateRoute: _onGenerateRoute,
       onGenerateTitle: (BuildContext context) =>
-          AppLocalizations.of(context)!.appName,
+          AppLocalizations.of(context).appName,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: AppLocalizations.delegate.supportedLocales,
     );
   }
 }

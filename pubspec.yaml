@@ -41,7 +41,8 @@ dependencies:
   json_annotation: ^4.6.0
   http: ^0.13.4
   intl: ^0.17.0
-  after_layout: ^1.2.0
+  flutter_html: ^2.2.1
+  markdown: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -96,3 +97,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   generate: true
+flutter_intl:
+  enabled: true
+  class_name: AppLocalizations
+  main_locale: zh
