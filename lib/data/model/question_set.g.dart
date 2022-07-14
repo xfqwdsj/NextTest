@@ -1,0 +1,104 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'question_set.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+QuestionSet _$QuestionSetFromJson(Map<String, dynamic> json) => QuestionSet(
+      json['version'] as int,
+      Information.fromJson(json['information'] as Map<String, dynamic>),
+      json['random'] as bool,
+      (json['questions'] as List<dynamic>)
+          .map((e) => Question.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$QuestionSetToJson(QuestionSet instance) =>
+    <String, dynamic>{
+      'version': instance.version,
+      'information': instance.information,
+      'random': instance.random,
+      'questions': instance.questions,
+    };
+
+Information _$InformationFromJson(Map<String, dynamic> json) => Information(
+      json['title'] as String,
+      json['description'] as String,
+      json['version'] as String,
+      json['author'] as String,
+    );
+
+Map<String, dynamic> _$InformationToJson(Information instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'description': instance.description,
+      'version': instance.version,
+      'author': instance.author,
+    };
+
+Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
+      json['type'] as String,
+      json['question'] as String,
+      $enumDecodeNullable(_$SelectionTypeEnumMap, json['selectionType']),
+      (json['options'] as List<dynamic>?)
+          ?.map((e) => Option.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      $enumDecodeNullable(_$SelectionScoringModeEnumMap, json['scoringMode']),
+      json['minCorrect'] as int?,
+      (json['banks'] as List<dynamic>?)
+          ?.map((e) => Bank.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
+      'type': instance.type,
+      'question': instance.question,
+      'selectionType': _$SelectionTypeEnumMap[instance.selectionType],
+      'options': instance.options,
+      'scoringMode': _$SelectionScoringModeEnumMap[instance.scoringMode],
+      'minCorrect': instance.minCorrect,
+      'banks': instance.banks,
+    };
+
+const _$SelectionTypeEnumMap = {
+  SelectionType.single: 'single',
+  SelectionType.multiple: 'multiple',
+};
+
+const _$SelectionScoringModeEnumMap = {
+  SelectionScoringMode.loose: 'loose',
+  SelectionScoringMode.strict: 'strict',
+};
+
+Option _$OptionFromJson(Map<String, dynamic> json) => Option(
+      json['title'] as String,
+      json['isCorrect'] as bool,
+      (json['score'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
+      'title': instance.title,
+      'isCorrect': instance.isCorrect,
+      'score': instance.score,
+    };
+
+Bank _$BankFromJson(Map<String, dynamic> json) => Bank(
+      $enumDecode(_$FillingScoringModeEnumMap, json['scoringMode']),
+      json['placeholder'] as String,
+      (json['score'] as num).toDouble(),
+      json['answer'] as String,
+    );
+
+Map<String, dynamic> _$BankToJson(Bank instance) => <String, dynamic>{
+      'scoringMode': _$FillingScoringModeEnumMap[instance.scoringMode]!,
+      'placeholder': instance.placeholder,
+      'score': instance.score,
+      'answer': instance.answer,
+    };
+
+const _$FillingScoringModeEnumMap = {
+  FillingScoringMode.manual: 'manual',
+  FillingScoringMode.strict: 'strict',
+};
