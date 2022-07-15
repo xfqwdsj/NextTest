@@ -26,6 +26,7 @@ class _NotFoundPageState extends State<NotFoundPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: NextTestAppBar(
+          context: context,
           title: Text(AppLocalizations.of(context).notFoundPageTitle),
         ),
         body: Center(

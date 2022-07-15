@@ -143,10 +143,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
-
   @override
   Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(locale);
-
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

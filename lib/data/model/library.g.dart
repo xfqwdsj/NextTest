@@ -25,7 +25,7 @@ Map<String, dynamic> _$LibraryToJson(Library instance) => <String, dynamic>{
     };
 
 Child _$ChildFromJson(Map<String, dynamic> json) => Child(
-      json['title'] as String,
+  json['title'] as String,
       json['description'] as String,
       json['url'] as String?,
       (json['children'] as List<dynamic>?)

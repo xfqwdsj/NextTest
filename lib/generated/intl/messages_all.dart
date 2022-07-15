@@ -18,7 +18,6 @@ import 'package:intl/src/intl_helpers.dart';
 import 'messages_zh.dart' as messages_zh;
 
 typedef Future<dynamic> LibraryLoader();
-
 Map<String, LibraryLoader> _deferredLibraries = {
   'zh': () => new Future.value(null),
 };

@@ -23,6 +23,7 @@ class _MainState extends State<NextTestMainPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: NextTestAppBar(
+          context: context,
           title: Text(AppLocalizations.of(context).mainPageTitle),
         ),
         body: Center(

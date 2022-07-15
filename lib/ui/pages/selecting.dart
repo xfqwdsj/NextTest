@@ -89,6 +89,7 @@ class _SelectingState extends State<NextTestSelectingPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: NextTestAppBar(
+          context: context,
           title: Text(AppLocalizations.of(context).selectingPageTitle),
         ),
         body: body,

@@ -49,6 +49,7 @@ class _TestingState extends State<NextTestTestingPage> {
       length: questionSet?.questions.length ?? 0,
       child: Scaffold(
         appBar: NextTestAppBar(
+          context: context,
           title: Text(AppLocalizations.of(context).testingPageTitle),
           bottom: TabBar(
             tabs: [
@@ -57,6 +58,7 @@ class _TestingState extends State<NextTestTestingPage> {
                     text: AppLocalizations.of(context)
                         .testingPageTabItemTitle(i + 1))
             ],
+            isScrollable: true,
           ),
         ),
         body: body,

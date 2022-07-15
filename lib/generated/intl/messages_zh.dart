@@ -23,7 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(number) => "第 ${number} 题";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "appName": MessageLookupByLibrary.simpleMessage("NextTest"),
         "mainPageTitle": MessageLookupByLibrary.simpleMessage("主页"),
