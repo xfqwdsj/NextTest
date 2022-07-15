@@ -27,7 +27,7 @@ const RESOURCES = {
 "assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Fraktur-Regular.ttf": "dede6f2c7dad4402fa205644391b3a94",
 "assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_AMS-Regular.ttf": "657a5353a553777e270827bd1630e467",
 "assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Fraktur-Bold.ttf": "46b41c4de7a936d099575185a94855c4",
-"assets/NOTICES": "bc4db21ecc851ac9189162ce3797ecae",
+"assets/NOTICES": "7fcb49c8976ec2a95047c7557a7d7694",
 "assets/AssetManifest.json": "ac48380cbdb10868bd9f6995e11ba02f",
 "assets/FontManifest.json": "71a4a82de411f155107da3f8dac64ebd",
 "assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
@@ -41,8 +41,8 @@ const RESOURCES = {
 "canvaskit/canvaskit.js": "c2b4e5f3d7a3d82aed024e7249a78487",
 "canvaskit/profiling/canvaskit.wasm": "95e736ab31147d1b2c7b25f11d4c32cd",
 "canvaskit/profiling/canvaskit.js": "ae2949af4efc61d28a4a80fffa1db900",
-"index.html": "9870e23acfad70ed50df0c094ece6ccf",
-"/": "9870e23acfad70ed50df0c094ece6ccf",
+"index.html": "18b5abc4208ab2722093d2ca8f241d1b",
+"/": "18b5abc4208ab2722093d2ca8f241d1b",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "main.dart.js": "23af889b91edc0168bb87f87877d03d9"
 };
