@@ -28023,7 +28023,7 @@ b7N(a){var s,r=J.a7(a),q=A.aU(r.h(a,"type")),p=A.aU(r.h(a,"question")),o=t.N,n=A
 l=l==null?null:J.cL(l,new A.avY(),t.bw).e1(0)
 o=A.aMP(B.Oi,r.h(a,"scoringMode"),t.x3,o)
 s=A.fW(r.h(a,"minCorrect"))
-r=m.a(r.h(a,"banks"))
+r=m.a(r.h(a,"blanks"))
 return new A.yp(q,p,n,l,o,s,r==null?null:J.cL(r,new A.avZ(),t.N0).e1(0))},
 yq:function yq(a,b,c,d){var _=this
 _.a=a
@@ -94255,7 +94255,7 @@ bb(){var s=this
 return A.a3(["title",s.a,"description",s.b,"version",s.c,"author",s.d],t.N,t.z)}}
 A.yp.prototype={
 bb(){var s=this
-return A.a3(["type",s.a,"question",s.b,"selectionType",B.Ok.h(0,s.c),"options",s.d,"scoringMode",B.Oi.h(0,s.e),"minCorrect",s.f,"banks",s.r],t.N,t.z)}}
+return A.a3(["type",s.a,"question",s.b,"selectionType",B.Ok.h(0,s.c),"options",s.d,"scoringMode",B.Oi.h(0,s.e),"minCorrect",s.f,"blanks",s.r],t.N,t.z)}}
 A.uh.prototype={
 j(a){return"SelectionType."+this.b}}
 A.y2.prototype={
