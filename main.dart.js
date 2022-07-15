@@ -94435,9 +94435,7 @@ if(p===!0){p=A.a(["selecting"],t.s)
 s=r.b.a.c
 B.b.J(p,new A.K(s,new A.aCw(),A.a_(s).i("K<1,j>")))
 p.push(B.f.j(r.d))
-A.aRn(r.c,"/"+A.Bo(q,p,A.a3(["url",r.e.c],t.N,t.z)).goY(),t.X)}else if(p===!1){p=r.e.c
-p.toString
-p=A.Bo(q,A.a(["testing",p],t.s),q).goY()
+A.aRn(r.c,"/"+A.Bo(q,p,q).goY(),t.X)}else if(p===!1){p=A.Bo(q,A.a(["testing"],t.s),A.a3(["url",r.e.c],t.N,t.z)).goY()
 s=A.fJ(r.c,!1)
 p=s.zn("/"+p,q,t.X)
 p.toString
