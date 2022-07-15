@@ -68,13 +68,12 @@ class _SelectingState extends State<NextTestSelectingPage> {
               NextTestSelectingPage.route,
               ...?(widget.path?.map((e) => e.toString())),
               index.toString()
-            ], query: {
-              'url': child.url
-            }));
+            ]));
       } else if (isFolder == false) {
         Navigator.pushNamedAndRemoveUntil(
             context,
-            RouteUtils.toRoute(path: [NextTestTestingPage.route, child.url!]),
+            RouteUtils.toRoute(
+                path: [NextTestTestingPage.route], query: {'url': child.url}),
             (route) => route.settings.name == '/');
       }
     }
