@@ -35,7 +35,7 @@ class Information {
 @JsonSerializable()
 class Question {
   Question(this.type, this.question, this.selectionType, this.options,
-      this.scoringMode, this.minCorrect, this.banks);
+      this.scoringMode, this.minCorrect, this.blanks);
 
   final String type;
   final String question;
@@ -43,7 +43,7 @@ class Question {
   final List<Option>? options;
   final SelectionScoringMode? scoringMode;
   final int? minCorrect;
-  final List<Bank>? banks;
+  final List<Blank>? blanks;
 
   factory Question.fromJson(Map<String, dynamic> json) =>
       _$QuestionFromJson(json);
@@ -72,15 +72,15 @@ class Option {
 enum SelectionScoringMode { loose, strict }
 
 @JsonSerializable()
-class Bank {
-  Bank(this.scoringMode, this.placeholder, this.score, this.answer);
+class Blank {
+  Blank(this.scoringMode, this.placeholder, this.score, this.answer);
 
   final FillingScoringMode scoringMode;
   final String placeholder;
   final double score;
   final String answer;
 
-  factory Bank.fromJson(Map<String, dynamic> json) => _$BankFromJson(json);
+  factory Blank.fromJson(Map<String, dynamic> json) => _$BankFromJson(json);
 
   Map<String, dynamic> toJson() => _$BankToJson(this);
 }

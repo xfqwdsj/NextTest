@@ -36,7 +36,7 @@ class _SelectingState extends State<NextTestSelectingPage> {
                 _buildItem(context, value, index));
       });
     }).catchError((e) {
-      Navigator.pushReplacementNamed(context, RouteUtils.toRoute(['404']),
+      Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
           arguments: e);
     });
   }
@@ -64,15 +64,17 @@ class _SelectingState extends State<NextTestSelectingPage> {
       if (isFolder == true) {
         Navigator.pushNamed(
             context,
-            RouteUtils.toRoute([
+            RouteUtils.toRoute(path: [
               NextTestSelectingPage.route,
               ...?(widget.path?.map((e) => e.toString())),
               index.toString()
-            ]));
+            ], query: {
+              'url': child.url
+            }));
       } else if (isFolder == false) {
         Navigator.pushNamedAndRemoveUntil(
             context,
-            RouteUtils.toRoute([NextTestTestingPage.route, child.url!]),
+            RouteUtils.toRoute(path: [NextTestTestingPage.route, child.url!]),
             (route) => route.settings.name == '/');
       }
     }

@@ -13,26 +13,27 @@ class NextTestApp extends StatelessWidget {
   const NextTestApp({Key? key}) : super(key: key);
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
-    final path = Uri.parse(settings.name ?? '').pathSegments;
+    final uri = Uri.parse(settings.name ?? '');
+    final path = uri.pathSegments;
     if (path.isEmpty) {
       return MaterialPageRoute(
           builder: (context) => const NextTestMainPage(), settings: settings);
     }
-    switch (path.first) {
-      case NextTestSelectingPage.route:
-        return MaterialPageRoute(
-            builder: (context) => NextTestSelectingPage(
-                path: path.skip(1).map((e) => int.parse(e)).toList()),
-            settings: settings);
-      case NextTestTestingPage.route:
-        return MaterialPageRoute(
-            builder: (context) => NextTestTestingPage(url: path[1]),
-            settings: settings);
-      default:
-        return MaterialPageRoute(
-            builder: (context) => NotFoundPage(error: settings.arguments),
-            settings: settings);
+    if (path.first == NextTestSelectingPage.route) {
+      return MaterialPageRoute(
+          builder: (context) => NextTestSelectingPage(
+              path: path.skip(1).map((e) => int.parse(e)).toList()),
+          settings: settings);
     }
+    if (path.first == NextTestTestingPage.route) {
+      return MaterialPageRoute(
+          builder: (context) =>
+              NextTestTestingPage(url: uri.queryParameters['url']!),
+          settings: settings);
+    }
+    return MaterialPageRoute(
+        builder: (context) => NotFoundPage(error: settings.arguments),
+        settings: settings);
   }
 
   @override

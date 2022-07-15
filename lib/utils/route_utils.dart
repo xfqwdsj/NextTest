@@ -1,4 +1,5 @@
 class RouteUtils {
-  static String toRoute(List<String> pathSegments) =>
-      '/${Uri(pathSegments: pathSegments).path}';
+  static String toRoute(
+          {required List<String> path, Map<String, dynamic>? query}) =>
+      '/${Uri(pathSegments: path, queryParameters: query).toString()}';
 }

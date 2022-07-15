@@ -17,7 +17,7 @@ class NextTestMainPage extends StatefulWidget {
 class _MainState extends State<NextTestMainPage> {
   void _goToHome() {
     Navigator.pushNamed(
-        context, RouteUtils.toRoute([NextTestSelectingPage.route]));
+        context, RouteUtils.toRoute(path: [NextTestSelectingPage.route]));
   }
 
   @override

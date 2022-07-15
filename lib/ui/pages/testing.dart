@@ -39,7 +39,7 @@ class _TestingState extends State<NextTestTestingPage> {
         body = _buildBody();
       });
     }).catchError((e) {
-      Navigator.pushReplacementNamed(context, RouteUtils.toRoute(['404']),
+      Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
           arguments: e);
     });
   }
@@ -89,7 +89,7 @@ class _QuestionViewState extends State<QuestionView> {
           padding: const EdgeInsets.all(5),
           child: TextField(
             decoration: InputDecoration(
-              labelText: widget.question.banks![0].placeholder,
+              labelText: widget.question.blanks![0].placeholder,
             ),
           ),
         ),
