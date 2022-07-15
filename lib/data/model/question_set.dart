@@ -80,9 +80,9 @@ class Blank {
   final double score;
   final String answer;
 
-  factory Blank.fromJson(Map<String, dynamic> json) => _$BankFromJson(json);
+  factory Blank.fromJson(Map<String, dynamic> json) => _$BlankFromJson(json);
 
-  Map<String, dynamic> toJson() => _$BankToJson(this);
+  Map<String, dynamic> toJson() => _$BlankToJson(this);
 }
 
 enum FillingScoringMode { manual, strict }

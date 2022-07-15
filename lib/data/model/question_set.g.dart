@@ -47,20 +47,19 @@ Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
           .toList(),
       $enumDecodeNullable(_$SelectionScoringModeEnumMap, json['scoringMode']),
       json['minCorrect'] as int?,
-      (json['banks'] as List<dynamic>?)
+      (json['blanks'] as List<dynamic>?)
           ?.map((e) => Blank.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$QuestionToJson(Question instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'type': instance.type,
       'question': instance.question,
       'selectionType': _$SelectionTypeEnumMap[instance.selectionType],
       'options': instance.options,
       'scoringMode': _$SelectionScoringModeEnumMap[instance.scoringMode],
       'minCorrect': instance.minCorrect,
-      'banks': instance.blanks,
+      'blanks': instance.blanks,
     };
 
 const _$SelectionTypeEnumMap = {
@@ -85,14 +84,14 @@ Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
       'score': instance.score,
     };
 
-Blank _$BankFromJson(Map<String, dynamic> json) => Blank(
+Blank _$BlankFromJson(Map<String, dynamic> json) => Blank(
       $enumDecode(_$FillingScoringModeEnumMap, json['scoringMode']),
       json['placeholder'] as String,
       (json['score'] as num).toDouble(),
       json['answer'] as String,
     );
 
-Map<String, dynamic> _$BankToJson(Blank instance) => <String, dynamic>{
+Map<String, dynamic> _$BlankToJson(Blank instance) => <String, dynamic>{
       'scoringMode': _$FillingScoringModeEnumMap[instance.scoringMode]!,
       'placeholder': instance.placeholder,
       'score': instance.score,
