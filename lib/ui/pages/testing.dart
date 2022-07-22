@@ -135,6 +135,8 @@ class _QuestionViewState extends State<QuestionView> {
         },
       );
 
+  String answer = '';
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(10),
@@ -143,9 +145,25 @@ class _QuestionViewState extends State<QuestionView> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(children: [
+            TextButton(
+                onPressed: () {
+                  answer = '';
+                  if (widget.question.type == QuestionType.selection) {
+                    for (var element in widget.question.options!) {
+                      if (element.isCorrect) {
+                        answer += '\n${element.title.toHtml()}';
+                      }
+                    }
+                  } else {
+                    for (var element in widget.question.blanks!) {
+                      answer += '\n${element.answer}';
+                    }
+                  }
+                },
+                child: const Text('显示答案')),
             Container(
               padding: const EdgeInsets.all(5),
-              child: Html(data: widget.question.question.toHtml()),
+              child: Html(data: widget.question.question.toHtml() + answer),
             ),
             Container(
               padding: const EdgeInsets.all(5),
