@@ -7,7 +7,7 @@ part of 'question_set.dart';
 // **************************************************************************
 
 QuestionSet _$QuestionSetFromJson(Map<String, dynamic> json) => QuestionSet(
-      json['version'] as int,
+      json['version'] as String,
       Information.fromJson(json['information'] as Map<String, dynamic>),
       json['random'] as bool,
       (json['questions'] as List<dynamic>)
@@ -39,7 +39,7 @@ Map<String, dynamic> _$InformationToJson(Information instance) =>
     };
 
 Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
-      json['type'] as String,
+  $enumDecode(_$QuestionTypeEnumMap, json['type']),
       json['question'] as String,
       $enumDecodeNullable(_$SelectionTypeEnumMap, json['selectionType']),
       (json['options'] as List<dynamic>?)
@@ -53,7 +53,7 @@ Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
     );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
-      'type': instance.type,
+      'type': _$QuestionTypeEnumMap[instance.type]!,
       'question': instance.question,
       'selectionType': _$SelectionTypeEnumMap[instance.selectionType],
       'options': instance.options,
@@ -61,6 +61,11 @@ Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'minCorrect': instance.minCorrect,
       'blanks': instance.blanks,
     };
+
+const _$QuestionTypeEnumMap = {
+  QuestionType.selection: 'selection',
+  QuestionType.filling: 'filling',
+};
 
 const _$SelectionTypeEnumMap = {
   SelectionType.single: 'single',

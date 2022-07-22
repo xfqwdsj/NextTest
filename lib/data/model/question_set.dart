@@ -6,7 +6,7 @@ part 'question_set.g.dart';
 class QuestionSet {
   QuestionSet(this.version, this.information, this.random, this.questions);
 
-  final int version;
+  final String version;
   final Information information;
   final bool random;
   final List<Question> questions;
@@ -37,7 +37,7 @@ class Question {
   Question(this.type, this.question, this.selectionType, this.options,
       this.scoringMode, this.minCorrect, this.blanks);
 
-  final String type;
+  final QuestionType type;
   final String question;
   final SelectionType? selectionType;
   final List<Option>? options;
@@ -49,6 +49,11 @@ class Question {
       _$QuestionFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestionToJson(this);
+}
+
+enum QuestionType {
+  selection,
+  filling,
 }
 
 enum SelectionType {

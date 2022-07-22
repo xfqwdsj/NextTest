@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart';
+import 'package:next_test/data/answer.dart';
 import 'package:next_test/data/model/question_set.dart';
 import 'package:next_test/ui/widgets/app_bar.dart';
 import 'package:next_test/utils/html_utils.dart';
@@ -42,8 +43,22 @@ class _TestingState extends State<NextTestTestingPage> {
 
   Widget _buildBody(QuestionSet set) => ListView.builder(
       itemCount: set.questions.length,
-      itemBuilder: (BuildContext context, int index) =>
-          QuestionView(question: set.questions[index]));
+      itemBuilder: (BuildContext context, int index) {
+        Answer answer;
+        if (set.questions[index].type == QuestionType.selection) {
+          if (set.questions[index].selectionType == SelectionType.single) {
+            answer = SingleSelectionQuestionAnswer();
+          } else {
+            answer = MultipleSelectionQuestionAnswer();
+          }
+        } else {
+          answer = FillingQuestionAnswer();
+        }
+        return QuestionView(
+          question: set.questions[index],
+          answer: answer,
+        );
+      });
 
   void _done() {}
 
@@ -67,15 +82,59 @@ class _TestingState extends State<NextTestTestingPage> {
 }
 
 class QuestionView extends StatefulWidget {
-  const QuestionView({Key? key, required this.question}) : super(key: key);
+  const QuestionView({Key? key, required this.question, required this.answer})
+      : super(key: key);
 
   final Question question;
+  final Answer answer;
 
   @override
   State<StatefulWidget> createState() => _QuestionViewState();
 }
 
 class _QuestionViewState extends State<QuestionView> {
+  Widget _buildOption(int index) {
+    if (widget.question.selectionType == SelectionType.single) {
+      final answer = widget.answer as SingleSelectionQuestionAnswer;
+      return RadioListTile(
+        value: index,
+        groupValue: answer.selected,
+        onChanged: (int? value) {
+          setState(() {
+            answer.selected = value;
+          });
+        },
+        title: Html(data: widget.question.options![index].title.toHtml()),
+      );
+    } else {
+      final answer = widget.answer as MultipleSelectionQuestionAnswer;
+      return CheckboxListTile(
+        value: answer.selected.contains(index),
+        onChanged: (value) {
+          setState(() {
+            if (value == true) {
+              answer.selected.add(index);
+            } else {
+              answer.selected.remove(index);
+            }
+          });
+        },
+        title: Html(data: widget.question.options![index].title.toHtml()),
+        controlAffinity: ListTileControlAffinity.leading,
+      );
+    }
+  }
+
+  Widget _buildTextField(int index) => TextField(
+        decoration: InputDecoration(
+          labelText: widget.question.blanks![index].placeholder,
+        ),
+        textInputAction: TextInputAction.next,
+        onChanged: (value) {
+          (widget.answer as FillingQuestionAnswer).answers[index] = value;
+        },
+      );
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(10),
@@ -90,12 +149,17 @@ class _QuestionViewState extends State<QuestionView> {
             ),
             Container(
               padding: const EdgeInsets.all(5),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: widget.question.blanks![0].placeholder,
-                ),
+              child: Column(
+                children: [
+                  if (widget.question.type == QuestionType.selection)
+                    for (int i = 0; i < widget.question.options!.length; i++)
+                      _buildOption(i),
+                  if (widget.question.type == QuestionType.filling)
+                    for (int i = 0; i < widget.question.blanks!.length; i++)
+                      _buildTextField(i),
+                ],
               ),
-            ),
+            )
           ]),
         ),
       );
