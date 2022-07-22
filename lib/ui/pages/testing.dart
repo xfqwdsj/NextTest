@@ -22,21 +22,17 @@ class NextTestTestingPage extends StatefulWidget {
 }
 
 class _TestingState extends State<NextTestTestingPage> {
-  QuestionSet? questionSet;
   Widget body = const Center(child: CircularProgressIndicator());
-
-  Widget _buildBody() => TabBarView(children: [
-        for (var question in questionSet!.questions)
-          QuestionView(question: question)
-      ]);
 
   @override
   void initState() {
     super.initState();
     _fetchQuestionSet().then((value) {
       setState(() {
-        questionSet = value;
-        body = _buildBody();
+        if (value.random) {
+          value.questions.shuffle();
+        }
+        body = _buildBody(value);
       });
     }).catchError((e) {
       Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
@@ -44,25 +40,27 @@ class _TestingState extends State<NextTestTestingPage> {
     });
   }
 
+  Widget _buildBody(QuestionSet set) => ListView.builder(
+      itemCount: set.questions.length,
+      itemBuilder: (BuildContext context, int index) =>
+          QuestionView(question: set.questions[index]));
+
+  void _done() {}
+
   @override
-  Widget build(BuildContext context) => DefaultTabController(
-      length: questionSet?.questions.length ?? 0,
-      child: Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         appBar: NextTestAppBar(
           context: context,
           title: Text(AppLocalizations.of(context).testingPageTitle),
-          bottom: TabBar(
-            tabs: [
-              for (var i = 0; i < (questionSet?.questions.length ?? 0); i++)
-                Tab(
-                    text: AppLocalizations.of(context)
-                        .testingPageTabItemTitle(i + 1))
-            ],
-            isScrollable: true,
-          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.done),
+              onPressed: _done,
+            ),
+          ],
         ),
         body: body,
-      ));
+      );
 
   Future<QuestionSet> _fetchQuestionSet() async => QuestionSet.fromJson(
       utf8.decode((await get(Uri.parse(widget.url))).bodyBytes).toMap());
@@ -79,19 +77,26 @@ class QuestionView extends StatefulWidget {
 
 class _QuestionViewState extends State<QuestionView> {
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-          child: Column(children: [
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Html(data: widget.question.question.toHtml()),
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: widget.question.blanks![0].placeholder,
-            ),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
+          child: Column(children: [
+            Container(
+              padding: const EdgeInsets.all(5),
+              child: Html(data: widget.question.question.toHtml()),
+            ),
+            Container(
+              padding: const EdgeInsets.all(5),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: widget.question.blanks![0].placeholder,
+                ),
+              ),
+            ),
+          ]),
         ),
-      ]));
+      );
 }
