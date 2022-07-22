@@ -151,12 +151,16 @@ class _QuestionViewState extends State<QuestionView> {
                   if (widget.question.type == QuestionType.selection) {
                     for (var element in widget.question.options!) {
                       if (element.isCorrect) {
-                        answer += '\n${element.title.toHtml()}';
+                        setState(() {
+                          answer += '\n${element.title.toHtml()}';
+                        });
                       }
                     }
                   } else {
                     for (var element in widget.question.blanks!) {
-                      answer += '\n${element.answer}';
+                      setState(() {
+                        answer += '\n${element.answer}';
+                      });
                     }
                   }
                 },
