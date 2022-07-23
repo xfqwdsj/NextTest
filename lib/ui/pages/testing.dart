@@ -131,7 +131,9 @@ class _QuestionViewState extends State<QuestionView> {
         ),
         textInputAction: TextInputAction.next,
         onChanged: (value) {
-          (widget.answer as FillingQuestionAnswer).answers[index] = value;
+          setState(() {
+            (widget.answer as FillingQuestionAnswer).answers[index] = value;
+          });
         },
       );
 
