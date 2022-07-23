@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="xyz.xfqlittlefan.nexttest">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-            android:label="next_test"
+            android:label="NextTest"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
         <activity

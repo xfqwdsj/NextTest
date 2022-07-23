@@ -19,8 +19,8 @@ jobs:
           cache: true
       - run: |
           flutter pub get
-          flutter build apk
+          flutter build apk --split-per-abi
       - uses: actions/upload-artifact@v3
         with:
           name: Apk
-          path: build/app/outputs/
+          path: build/app/outputs/apk/release/
