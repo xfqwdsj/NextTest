@@ -137,6 +137,25 @@ class _QuestionViewState extends State<QuestionView> {
 
   String answer = '';
 
+  void _updateAnswer() {
+    answer = '';
+    if (widget.question.type == QuestionType.selection) {
+      for (var element in widget.question.options!) {
+        if (element.isCorrect) {
+          setState(() {
+            answer += '\n${element.title.toHtml()}';
+          });
+        }
+      }
+    } else {
+      for (var element in widget.question.blanks!) {
+        setState(() {
+          answer += '\n${element.answer}';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(10),
@@ -145,30 +164,16 @@ class _QuestionViewState extends State<QuestionView> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(children: [
-            TextButton(
-                onPressed: () {
-                  answer = '';
-                  if (widget.question.type == QuestionType.selection) {
-                    for (var element in widget.question.options!) {
-                      if (element.isCorrect) {
-                        setState(() {
-                          answer += '\n${element.title.toHtml()}';
-                        });
-                      }
-                    }
-                  } else {
-                    for (var element in widget.question.blanks!) {
-                      setState(() {
-                        answer += '\n${element.answer}';
-                      });
-                    }
-                  }
-                },
-                child: const Text('显示答案')),
+            TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
             Container(
               padding: const EdgeInsets.all(5),
               child: Html(data: widget.question.question.toHtml() + answer),
             ),
+            if (answer.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(5),
+                child: Html(data: answer),
+              ),
             Container(
               padding: const EdgeInsets.all(5),
               child: Column(
