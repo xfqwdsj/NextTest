@@ -1,4 +1,4 @@
-name: Flutter Web
+name: Flutter Android
 on:
   push:
     branches:
@@ -10,15 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: '11'
       - uses: subosito/flutter-action@v2
         with:
           cache: true
       - run: |
-          flutter config --enable-web
           flutter pub get
-          flutter build web
-      - uses: peaceiris/actions-gh-pages@v3
+          flutter build apk
+      - uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          cname: nexttest.xfqlittlefan.xyz
+          name: Apk
+          path: build/app/outputs/
