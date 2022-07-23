@@ -126,6 +126,8 @@ class _QuestionViewState extends State<QuestionView> {
   }
 
   Widget _buildTextField(int index) => TextField(
+        controller: TextEditingController(
+            text: (widget.answer as FillingQuestionAnswer).answers[index]),
         decoration: InputDecoration(
           labelText: widget.question.blanks![index].placeholder,
         ),
