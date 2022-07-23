@@ -93,6 +93,15 @@ class QuestionView extends StatefulWidget {
 }
 
 class _QuestionViewState extends State<QuestionView> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.question.type == QuestionType.filling) {
+      (widget.answer as FillingQuestionAnswer).controllers =
+          widget.question.blanks!.map((e) => TextEditingController()).toList();
+    }
+  }
+
   Widget _buildOption(int index) {
     if (widget.question.selectionType == SelectionType.single) {
       final answer = widget.answer as SingleSelectionQuestionAnswer;
@@ -126,22 +135,11 @@ class _QuestionViewState extends State<QuestionView> {
   }
 
   Widget _buildTextField(int index) => TextField(
-        controller: TextEditingController(
-            text: (widget.answer as FillingQuestionAnswer)
-                    .answers
-                    .asMap()
-                    .containsKey(index)
-                ? (widget.answer as FillingQuestionAnswer).answers[index]
-                : ''),
+    controller: (widget.answer as FillingQuestionAnswer).controllers[index],
         decoration: InputDecoration(
           labelText: widget.question.blanks![index].placeholder,
         ),
         textInputAction: TextInputAction.next,
-        onChanged: (value) {
-          setState(() {
-            (widget.answer as FillingQuestionAnswer).answers[index] = value;
-          });
-        },
       );
 
   String answer = '';
@@ -167,36 +165,36 @@ class _QuestionViewState extends State<QuestionView> {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(10),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(children: [
-            TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
-            Container(
-              padding: const EdgeInsets.all(5),
-              child: Html(data: widget.question.question.toHtml()),
-            ),
-            if (answer.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.all(5),
-                child: Html(data: answer),
-              ),
-            Container(
-              padding: const EdgeInsets.all(5),
-              child: Column(
-                children: [
-                  if (widget.question.type == QuestionType.selection)
-                    for (int i = 0; i < widget.question.options!.length; i++)
-                      _buildOption(i),
-                  if (widget.question.type == QuestionType.filling)
-                    for (int i = 0; i < widget.question.blanks!.length; i++)
-                      _buildTextField(i),
-                ],
-              ),
-            )
-          ]),
+    padding: const EdgeInsets.all(10),
+    child: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(children: [
+        TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Html(data: widget.question.question.toHtml()),
         ),
-      );
+        if (answer.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.all(5),
+            child: Html(data: answer),
+          ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              if (widget.question.type == QuestionType.selection)
+                for (int i = 0; i < widget.question.options!.length; i++)
+                  _buildOption(i),
+              if (widget.question.type == QuestionType.filling)
+                for (int i = 0; i < widget.question.blanks!.length; i++)
+                  _buildTextField(i),
+            ],
+          ),
+        )
+      ]),
+    ),
+  );
 }

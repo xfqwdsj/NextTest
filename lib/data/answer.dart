@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 abstract class Answer {
   String get value;
 }
@@ -11,14 +13,14 @@ class SingleSelectionQuestionAnswer extends Answer {
 
 class MultipleSelectionQuestionAnswer extends Answer {
   @override
-  String get value => selected.toString();
+  String get value => selected.join(',');
 
   List<int> selected = [];
 }
 
 class FillingQuestionAnswer extends Answer {
   @override
-  String get value => answers.join(',');
+  String get value => controllers.map((c) => c.text).join(',');
 
-  List<String> answers = [];
+  List<TextEditingController> controllers = [];
 }
