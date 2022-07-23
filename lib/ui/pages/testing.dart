@@ -167,7 +167,7 @@ class _QuestionViewState extends State<QuestionView> {
             TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
             Container(
               padding: const EdgeInsets.all(5),
-              child: Html(data: widget.question.question.toHtml() + answer),
+              child: Html(data: widget.question.question.toHtml()),
             ),
             if (answer.isNotEmpty)
               Container(
