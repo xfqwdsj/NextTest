@@ -47,7 +47,7 @@ android {
 
     signingConfigs {
         config {
-            storeFile file('key/nexttest.jks')
+            storeFile file('../key/nexttest.jks')
             storePassword keyProperties.getProperty('a')
             keyAlias keyProperties.getProperty('b')
             keyPassword keyProperties.getProperty('c')
