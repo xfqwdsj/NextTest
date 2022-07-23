@@ -18,5 +18,5 @@ jobs:
           flutter build windows
       - uses: actions/upload-artifact@v3
         with:
-          name: exe
+          name: NextTest
           path: build/windows/runner/Release/
