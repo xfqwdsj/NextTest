@@ -88,7 +88,6 @@ class _SelectingState extends State<NextTestSelectingPage> {
             return const Center(child: CircularProgressIndicator());
           }
           return ListView.builder(
-            itemCount: list!.length,
             itemBuilder: (context, index) => ListTile(
               leading: Builder(builder: (context) {
                 if (list![index].url != null) {
@@ -112,6 +111,7 @@ class _SelectingState extends State<NextTestSelectingPage> {
               isThreeLine: list![index] is Library,
               onTap: () => _onItemTap(index),
             ),
+            itemCount: list!.length,
           );
         }),
       );
