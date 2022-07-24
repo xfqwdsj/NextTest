@@ -23,78 +23,39 @@ class NextTestSelectingPage extends StatefulWidget {
 }
 
 class _SelectingState extends State<NextTestSelectingPage> {
-  Widget body = const Center(child: CircularProgressIndicator());
+  List<Child>? list;
+
+  void _onItemTap(int index) {
+    if (list![index].children != null) {
+      Navigator.pushNamed(
+          context,
+          RouteUtils.toRoute(path: [
+            NextTestSelectingPage.route,
+            ...?(widget.path?.map((e) => e.toString())),
+            index.toString()
+          ]));
+    } else if (list![index].url != null) {
+      Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteUtils.toRoute(
+              path: [NextTestTestingPage.route],
+              query: {'url': list![index].url}),
+          (route) => route.settings.name == '/');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _fetchLibraries().then((value) {
       setState(() {
-        body = ListView.builder(
-            itemCount: value.length,
-            itemBuilder: (BuildContext context, int index) =>
-                _buildItem(context, value, index));
+        list = value;
       });
     }).catchError((e) {
       Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
           arguments: e);
     });
   }
-
-  Widget _buildItem(BuildContext context, List<Child> children, int index) {
-    final child = children[index];
-    Widget? leading;
-    String subtitle = child.description;
-    bool? isFolder;
-
-    if (child.url != null) {
-      leading = const Icon(Icons.book);
-      isFolder = false;
-    } else if (child.children != null) {
-      leading = const Icon(Icons.folder);
-      isFolder = true;
-    }
-
-    if (child is Library) {
-      subtitle +=
-          '\n${AppLocalizations.of(context).selectingPageItemAuthorPrefix}${child.author}';
-    }
-
-    void _onTap() {
-      if (isFolder == true) {
-        Navigator.pushNamed(
-            context,
-            RouteUtils.toRoute(path: [
-              NextTestSelectingPage.route,
-              ...?(widget.path?.map((e) => e.toString())),
-              index.toString()
-            ]));
-      } else if (isFolder == false) {
-        Navigator.pushNamedAndRemoveUntil(
-            context,
-            RouteUtils.toRoute(
-                path: [NextTestTestingPage.route], query: {'url': child.url}),
-            (route) => route.settings.name == '/');
-      }
-    }
-
-    return ListTile(
-      leading: leading,
-      title: Text(child.title),
-      subtitle: Text(subtitle),
-      isThreeLine: child is Library,
-      onTap: _onTap,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: NextTestAppBar(
-          context: context,
-          title: Text(AppLocalizations.of(context).selectingPageTitle),
-        ),
-        body: body,
-      );
 
   Future<List<Child>> _fetchLibraries() async {
     var urls = (await rootBundle.loadString("assets/libraries/libraries.yml"))
@@ -115,4 +76,43 @@ class _SelectingState extends State<NextTestSelectingPage> {
     }
     return libraries;
   }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: NextTestAppBar(
+          context: context,
+          title: Text(AppLocalizations.of(context).selectingPageTitle),
+        ),
+        body: Builder(builder: (context) {
+          if (list == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            itemCount: list!.length,
+            itemBuilder: (context, index) => ListTile(
+              leading: Builder(builder: (context) {
+                if (list![index].url != null) {
+                  return const Icon(Icons.book);
+                } else if (list![index].children != null) {
+                  return const Icon(Icons.folder);
+                } else {
+                  return const Icon(Icons.error);
+                }
+              }),
+              title: Text(list![index].title),
+              subtitle: Builder(builder: (context) {
+                final child = list![index];
+                String subtitle = child.description;
+                if (child is Library) {
+                  subtitle +=
+                      '\n${AppLocalizations.of(context).selectingPageItemAuthorPrefix}${child.author}';
+                }
+                return Text(subtitle);
+              }),
+              isThreeLine: list![index] is Library,
+              onTap: () => _onItemTap(index),
+            ),
+          );
+        }),
+      );
 }
