@@ -23,7 +23,7 @@ class NextTestTestingPage extends StatefulWidget {
 }
 
 class _TestingState extends State<NextTestTestingPage> {
-  Widget _body = const Center(child: CircularProgressIndicator());
+  QuestionSet? _questionSet;
   bool _isDone = false;
   final List<int> _selectedChips = [];
 
@@ -31,11 +31,11 @@ class _TestingState extends State<NextTestTestingPage> {
   void initState() {
     super.initState();
     _fetchQuestionSet().then((value) {
+      if (value.random) {
+        value.questions.shuffle();
+      }
       setState(() {
-        if (value.random) {
-          value.questions.shuffle();
-        }
-        _body = _buildBody(value);
+        _questionSet = value;
       });
     }).catchError((e) {
       Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
@@ -43,69 +43,40 @@ class _TestingState extends State<NextTestTestingPage> {
     });
   }
 
-  Widget _buildBody(QuestionSet set) => ListView.builder(
-      itemCount: set.questions.length,
-      itemBuilder: (BuildContext context, int index) {
-        Answer answer;
-        if (set.questions[index].type == QuestionType.selection) {
-          if (set.questions[index].selectionType == SelectionType.single) {
-            answer = SingleSelectionQuestionAnswer();
-          } else {
-            answer = MultipleSelectionQuestionAnswer();
-          }
-        } else {
-          answer = FillingQuestionAnswer();
-        }
-        return QuestionView(
-          question: set.questions[index],
-          answer: answer,
-          enabled: !_isDone,
-        );
-      });
-
   void _done() {
     setState(() {
       _isDone = true;
-      _body = Column(
-        children: [
-          Wrap(
-            children: [
-              _buildChip(0),
-              _buildChip(1),
-              _buildChip(2),
-            ],
-          ),
-          _body
-        ],
-      );
     });
   }
 
-  Widget _buildChip(int type) {
-    String label = '';
+  String _getChipLabel(int type) {
     switch (type) {
       case 0:
-        label = AppLocalizations.of(context).testingPageCorrectChipLabel;
-        break;
+        return AppLocalizations.of(context).testingPageCorrectChipLabel;
       case 1:
-        label = AppLocalizations.of(context).testingPageWrongChipLabel;
-        break;
+        return AppLocalizations.of(context).testingPageWrongChipLabel;
       case 2:
-        label = AppLocalizations.of(context).testingPagePendingChipLabel;
-        break;
+        return AppLocalizations.of(context).testingPagePendingChipLabel;
+      default:
+        return '';
     }
-    return FilterChip(
-      label: Text(label),
-      selected: _selectedChips.contains(type),
-      onSelected: (selected) {
-        if (selected) {
-          _selectedChips.add(type);
-        } else {
-          _selectedChips.remove(type);
-        }
-      },
-    );
   }
+
+  Widget _buildChip(int type) => Container(
+      padding: const EdgeInsets.all(4),
+      child: FilterChip(
+        label: Text(_getChipLabel(type)),
+        selected: _selectedChips.contains(type),
+        onSelected: (selected) {
+          setState(() {
+            if (selected) {
+              _selectedChips.add(type);
+            } else {
+              _selectedChips.remove(type);
+            }
+          });
+        },
+      ));
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -119,7 +90,47 @@ class _TestingState extends State<NextTestTestingPage> {
             ),
           ],
         ),
-        body: _body,
+        body: Builder(builder: (context) {
+          if (_questionSet == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            children: [
+              if (_isDone)
+                Wrap(
+                  children: [
+                    _buildChip(0),
+                    _buildChip(1),
+                    _buildChip(2),
+                  ],
+                ),
+              Expanded(
+                  child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  Answer answer;
+                  if (_questionSet!.questions[index].type ==
+                      QuestionType.selection) {
+                    if (_questionSet!.questions[index].selectionType ==
+                        SelectionType.single) {
+                      answer = SingleSelectionQuestionAnswer();
+                    } else {
+                      answer = MultipleSelectionQuestionAnswer();
+                    }
+                  } else {
+                    answer = FillingQuestionAnswer(
+                        _questionSet!.questions[index].blanks!.length);
+                  }
+                  return QuestionView(
+                    question: _questionSet!.questions[index],
+                    answer: answer,
+                    enabled: !_isDone,
+                  );
+                },
+                itemCount: _questionSet!.questions.length,
+              ))
+            ],
+          );
+        }),
       );
 
   Future<QuestionSet> _fetchQuestionSet() async => QuestionSet.fromJson(
@@ -143,15 +154,6 @@ class QuestionView extends StatefulWidget {
 }
 
 class _QuestionViewState extends State<QuestionView> {
-  @override
-  void initState() {
-    super.initState();
-    if (widget.question.type == QuestionType.filling) {
-      (widget.answer as FillingQuestionAnswer).controllers =
-          widget.question.blanks!.map((e) => TextEditingController()).toList();
-    }
-  }
-
   String answer = '';
 
   void _updateAnswer() {

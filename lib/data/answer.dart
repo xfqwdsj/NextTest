@@ -22,5 +22,9 @@ class FillingQuestionAnswer extends Answer {
   @override
   String get value => controllers.map((c) => c.text).join(',');
 
-  List<TextEditingController> controllers = [];
+  late List<TextEditingController> controllers;
+
+  FillingQuestionAnswer(int length) {
+    controllers = List.generate(length, (index) => TextEditingController());
+  }
 }
