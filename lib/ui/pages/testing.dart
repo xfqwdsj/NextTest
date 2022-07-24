@@ -23,7 +23,9 @@ class NextTestTestingPage extends StatefulWidget {
 }
 
 class _TestingState extends State<NextTestTestingPage> {
-  Widget body = const Center(child: CircularProgressIndicator());
+  Widget _body = const Center(child: CircularProgressIndicator());
+  bool _isDone = false;
+  final List<int> _selectedChips = [];
 
   @override
   void initState() {
@@ -33,7 +35,7 @@ class _TestingState extends State<NextTestTestingPage> {
         if (value.random) {
           value.questions.shuffle();
         }
-        body = _buildBody(value);
+        _body = _buildBody(value);
       });
     }).catchError((e) {
       Navigator.pushReplacementNamed(context, RouteUtils.toRoute(path: ['404']),
@@ -57,10 +59,53 @@ class _TestingState extends State<NextTestTestingPage> {
         return QuestionView(
           question: set.questions[index],
           answer: answer,
+          enabled: !_isDone,
         );
       });
 
-  void _done() {}
+  void _done() {
+    setState(() {
+      _isDone = true;
+      _body = Column(
+        children: [
+          Wrap(
+            children: [
+              _buildChip(0),
+              _buildChip(1),
+              _buildChip(2),
+            ],
+          ),
+          _body
+        ],
+      );
+    });
+  }
+
+  Widget _buildChip(int type) {
+    String label = '';
+    switch (type) {
+      case 0:
+        label = AppLocalizations.of(context).testingPageCorrectChipLabel;
+        break;
+      case 1:
+        label = AppLocalizations.of(context).testingPageWrongChipLabel;
+        break;
+      case 2:
+        label = AppLocalizations.of(context).testingPagePendingChipLabel;
+        break;
+    }
+    return FilterChip(
+      label: Text(label),
+      selected: _selectedChips.contains(type),
+      onSelected: (selected) {
+        if (selected) {
+          _selectedChips.add(type);
+        } else {
+          _selectedChips.remove(type);
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -74,7 +119,7 @@ class _TestingState extends State<NextTestTestingPage> {
             ),
           ],
         ),
-        body: body,
+        body: _body,
       );
 
   Future<QuestionSet> _fetchQuestionSet() async => QuestionSet.fromJson(
@@ -82,11 +127,16 @@ class _TestingState extends State<NextTestTestingPage> {
 }
 
 class QuestionView extends StatefulWidget {
-  const QuestionView({Key? key, required this.question, required this.answer})
+  const QuestionView(
+      {Key? key,
+      required this.question,
+      required this.answer,
+      required this.enabled})
       : super(key: key);
 
   final Question question;
   final Answer answer;
+  final bool enabled;
 
   @override
   State<StatefulWidget> createState() => _QuestionViewState();
@@ -101,46 +151,6 @@ class _QuestionViewState extends State<QuestionView> {
           widget.question.blanks!.map((e) => TextEditingController()).toList();
     }
   }
-
-  Widget _buildOption(int index) {
-    if (widget.question.selectionType == SelectionType.single) {
-      final answer = widget.answer as SingleSelectionQuestionAnswer;
-      return RadioListTile(
-        value: index,
-        groupValue: answer.selected,
-        onChanged: (int? value) {
-          setState(() {
-            answer.selected = value;
-          });
-        },
-        title: Html(data: widget.question.options![index].title.toHtml()),
-      );
-    } else {
-      final answer = widget.answer as MultipleSelectionQuestionAnswer;
-      return CheckboxListTile(
-        value: answer.selected.contains(index),
-        onChanged: (value) {
-          setState(() {
-            if (value == true) {
-              answer.selected.add(index);
-            } else {
-              answer.selected.remove(index);
-            }
-          });
-        },
-        title: Html(data: widget.question.options![index].title.toHtml()),
-        controlAffinity: ListTileControlAffinity.leading,
-      );
-    }
-  }
-
-  Widget _buildTextField(int index) => TextField(
-    controller: (widget.answer as FillingQuestionAnswer).controllers[index],
-        decoration: InputDecoration(
-          labelText: widget.question.blanks![index].placeholder,
-        ),
-        textInputAction: TextInputAction.next,
-      );
 
   String answer = '';
 
@@ -165,36 +175,85 @@ class _QuestionViewState extends State<QuestionView> {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(10),
-    child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(children: [
-        TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Html(data: widget.question.question.toHtml()),
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(children: [
+            TextButton(onPressed: _updateAnswer, child: const Text('显示答案')),
+            Container(
+              padding: const EdgeInsets.all(5),
+              child: Html(data: widget.question.question.toHtml()),
+            ),
+            if (answer.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(5),
+                child: Html(data: answer),
+              ),
+            Container(
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  if (widget.question.type == QuestionType.selection)
+                    for (int i = 0; i < widget.question.options!.length; i++)
+                      Builder(builder: (context) {
+                        if (widget.question.selectionType ==
+                            SelectionType.single) {
+                          final answer =
+                              widget.answer as SingleSelectionQuestionAnswer;
+                          return RadioListTile(
+                            value: i,
+                            groupValue: answer.selected,
+                            onChanged: widget.enabled
+                                ? (int? value) {
+                                    setState(() {
+                                      answer.selected = value;
+                                    });
+                                  }
+                                : null,
+                            title: Html(
+                                data:
+                                    widget.question.options![i].title.toHtml()),
+                          );
+                        } else {
+                          final answer =
+                              widget.answer as MultipleSelectionQuestionAnswer;
+                          return CheckboxListTile(
+                            value: answer.selected.contains(i),
+                            onChanged: widget.enabled
+                                ? (value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        answer.selected.add(i);
+                                      } else {
+                                        answer.selected.remove(i);
+                                      }
+                                    });
+                                  }
+                                : null,
+                            title: Html(
+                                data:
+                                    widget.question.options![i].title.toHtml()),
+                            controlAffinity: ListTileControlAffinity.leading,
+                          );
+                        }
+                      }),
+                  if (widget.question.type == QuestionType.filling)
+                    for (int i = 0; i < widget.question.blanks!.length; i++)
+                      TextField(
+                        controller: (widget.answer as FillingQuestionAnswer)
+                            .controllers[i],
+                        decoration: InputDecoration(
+                          labelText: widget.question.blanks![i].placeholder,
+                        ),
+                        textInputAction: TextInputAction.next,
+                        enabled: widget.enabled,
+                      )
+                ],
+              ),
+            )
+          ]),
         ),
-        if (answer.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.all(5),
-            child: Html(data: answer),
-          ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              if (widget.question.type == QuestionType.selection)
-                for (int i = 0; i < widget.question.options!.length; i++)
-                  _buildOption(i),
-              if (widget.question.type == QuestionType.filling)
-                for (int i = 0; i < widget.question.blanks!.length; i++)
-                  _buildTextField(i),
-            ],
-          ),
-        )
-      ]),
-    ),
-  );
+      );
 }

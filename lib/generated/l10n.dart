@@ -101,13 +101,33 @@ class AppLocalizations {
     );
   }
 
-  /// `第 {number} 题`
-  String testingPageTabItemTitle(int number) {
+  /// `正确`
+  String get testingPageCorrectChipLabel {
     return Intl.message(
-      '第 $number 题',
-      name: 'testingPageTabItemTitle',
+      '正确',
+      name: 'testingPageCorrectChipLabel',
       desc: '',
-      args: [number],
+      args: [],
+    );
+  }
+
+  /// `错误`
+  String get testingPageWrongChipLabel {
+    return Intl.message(
+      '错误',
+      name: 'testingPageWrongChipLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待定`
+  String get testingPagePendingChipLabel {
+    return Intl.message(
+      '待定',
+      name: 'testingPagePendingChipLabel',
+      desc: '',
+      args: [],
     );
   }
 

@@ -4,14 +4,9 @@
   "selectingPageTitle": "题组选择",
   "selectingPageItemAuthorPrefix": "作者：",
   "testingPageTitle": "测试",
-  "testingPageTabItemTitle": "第 {number} 题",
-  "@testingPageTabItemTitle": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  },
+  "testingPageCorrectChipLabel": "正确",
+  "testingPageWrongChipLabel": "错误",
+  "testingPagePendingChipLabel": "待定",
   "notFoundPageTitle": "无人区",
   "notFoundPageContent": "没有找到该页面...😥"
 }
