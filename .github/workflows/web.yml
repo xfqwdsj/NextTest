@@ -1,24 +1,48 @@
 name: Flutter Web
+
 on:
   push:
     branches:
       - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter with cache
+        uses: subosito/flutter-action@v2
         with:
+          channel: stable
           cache: true
-      - run: |
-          flutter config --enable-web
+
+      - name: Build
+        run: |
           flutter pub get
           flutter build web
-      - uses: peaceiris/actions-gh-pages@v3
+
+      - name: Upload
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          cname: nexttest.xfqlittlefan.xyz
+          path: build/web/
+
+  deploy:
+    name: Deploy
+    environment:
+      name: Web Demo
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
