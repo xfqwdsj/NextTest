@@ -16,7 +16,7 @@ jobs:
       - run: |
           flutter config --enable-windows-desktop
           flutter build windows
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: NextTest-Windows
           path: build/windows/runner/Release/
